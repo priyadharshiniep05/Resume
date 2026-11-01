@@ -14,7 +14,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 # ---------------------------------------------------------------------------
 # App Configuration
 # ---------------------------------------------------------------------------
-app = Flask(__name__)
+# Static files live in public/static so Vercel can serve them from its CDN.
+# Locally, Flask serves the same folder at /static.
+app = Flask(__name__, static_folder="public/static", static_url_path="/static")
 # Secret key comes from the SECRET_KEY environment variable (set it on your host).
 # Locally, a random key is generated each run if none is set.
 app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
@@ -26,7 +28,12 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "contact_messages.db")
-CERT_DIR = os.path.join(BASE_DIR, "static", "certificates")
+CERT_DIR = os.path.join(BASE_DIR, "public", "static", "certificates")
+
+# Contact form: set FORMSPREE_ID (e.g. "xabcdwxy") on your host to have messages
+# emailed to you via Formspree. Without it, messages are saved to the local SQLite DB.
+FORMSPREE_ID = os.environ.get("FORMSPREE_ID", "").strip()
+FORM_ENDPOINT = f"https://formspree.io/f/{FORMSPREE_ID}" if FORMSPREE_ID else None
 CERT_JSON = os.path.join(BASE_DIR, "certificates.json")
 
 # ---------------------------------------------------------------------------
@@ -311,6 +318,8 @@ def save_message(name, email, message):
 
 def get_messages():
     """Retrieve all contact form submissions."""
+    if not os.path.exists(DB_PATH):
+        return []
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     rows = conn.execute("SELECT * FROM messages ORDER BY created_at DESC").fetchall()
@@ -366,6 +375,12 @@ def scan_certificates():
                     "path": f"certificates/{filename}",
                 })
 
+    # On hosts where the images aren't bundled with the app (e.g. Vercel's public/ CDN),
+    # fall back to the list in certificates.json.
+    if not certificates:
+        for filename, name in json_map.items():
+            certificates.append({"name": name, "file": filename, "path": f"certificates/{filename}"})
+
     return certificates
 
 
@@ -387,6 +402,7 @@ def index():
         achievements=ACHIEVEMENTS,
         courses=COURSES,
         certificates=certs,
+        form_endpoint=FORM_ENDPOINT,
     )
 
 
@@ -462,6 +478,11 @@ def admin_messages():
 # Initialize & Run
 # ---------------------------------------------------------------------------
 
-if __name__ == "__main__":
+# Create the local message table when running locally (skipped on read-only hosts).
+try:
     init_db()
+except sqlite3.OperationalError:
+    pass
+
+if __name__ == "__main__":
     app.run(debug=True, port=5000)

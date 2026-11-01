@@ -1999,3 +1999,13 @@ html, body { background-color: transparent; }
     background: rgba(0, 0, 0, 0.035);
 }
 .pipeline-step--end { background: var(--color-white); color: var(--color-black); border-color: var(--color-white); }
+
+/* Contact form status (Formspree) */
+.form-status {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.05);
+    margin: 0;
+}
+.form-status.is-error { background: rgba(0, 0, 0, 0.85); color: var(--color-white); }

@@ -182,6 +182,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------------------
+    // 6c. Contact form via Formspree (no page reload)
+    // -------------------------------------------------------------------------
+    const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    if (contactForm && contactForm.dataset.ajax === 'true' && window.fetch) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = contactForm.querySelector('button[type="submit"]');
+            const show = (msg, ok) => {
+                formStatus.hidden = false;
+                formStatus.textContent = msg;
+                formStatus.classList.toggle('is-error', !ok);
+            };
+            btn.disabled = true;
+            try {
+                const res = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: new FormData(contactForm),
+                    headers: { 'Accept': 'application/json' },
+                });
+                if (res.ok) {
+                    contactForm.reset();
+                    show('Thanks! Your message has been sent. I\'ll get back to you soon.', true);
+                } else {
+                    show('Your message could not be sent. Please email me directly instead.', false);
+                }
+            } catch (err) {
+                show('Your message could not be sent. Check your connection, or email me directly.', false);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // -------------------------------------------------------------------------
     // 7. Certificate Gallery Lightbox
     // -------------------------------------------------------------------------
     const certCards = document.querySelectorAll('.cert-card');

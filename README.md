@@ -1,72 +1,82 @@
 # Priyadharshini E P — Portfolio
 
-A professional personal portfolio and resume website built with **Flask**, vanilla **HTML/CSS/JS**, and a strict monochrome editorial design.
+Personal portfolio site: business & data analyst with applied-AI research.
+Built with **Flask**, vanilla **HTML/CSS/JS**, a monochrome editorial design and an iOS-style glass UI.
 
-## Quick Start
+## Run it locally
 
 ```bash
-# 1. Create a virtual environment (first time only)
-python3 -m venv .venv
-
-# 2. Activate the virtual environment
+python3 -m venv .venv          # first time only
 source .venv/bin/activate
-
-# 3. Install dependencies
 pip install -r requirements.txt
-
-# 4. Run the development server
 python3 app.py
-
-# 5. Open in browser
-open http://127.0.0.1:5000
 ```
 
-The site will be live at **http://127.0.0.1:5000**.
+Open http://127.0.0.1:5000
 
-## Project Structure
+## Update the content
+
+Almost everything lives in plain lists near the top of `app.py`:
+
+| To change… | Edit |
+|---|---|
+| Name, title, summary, contact details | `PROFILE` |
+| Numbers under the hero | `STATS` |
+| Skills | `SKILLS` |
+| Research paper | `RESEARCH` |
+| Projects | `PROJECTS` (copy a block to add one) |
+| Hackathons, awards, publications | `ACHIEVEMENTS` |
+| Courses | `COURSES` |
+| Certificates | add the image to `public/static/certificates/`, then its name to `certificates.json` |
+| Résumé PDF | replace `public/static/files/Priyadharshini_EP_Resume.pdf` |
+
+Then publish:
+
+```bash
+git add -A
+git commit -m "Describe what you changed"
+git push
+```
+
+Vercel redeploys automatically after every push.
+
+## Deploy on Vercel
+
+1. Sign in at https://vercel.com with GitHub and **Add New → Project → Import** this repo.
+2. Leave the defaults (Vercel detects Flask from `app.py`) and add these **Environment Variables**:
+
+   | Name | Value |
+   |---|---|
+   | `SECRET_KEY` | a long random string: `python3 -c "import secrets; print(secrets.token_hex(32))"` |
+   | `FORMSPREE_ID` | the ID from your Formspree form URL, e.g. `xabcdwxy` from `https://formspree.io/f/xabcdwxy` |
+
+3. Click **Deploy**.
+
+### Contact form
+
+Vercel can't store files, so on the live site messages are emailed to you through
+[Formspree](https://formspree.io) (free tier). Create a form there with your email,
+copy its ID into `FORMSPREE_ID`, and redeploy.
+
+When you run the site locally without `FORMSPREE_ID`, messages are saved to
+`contact_messages.db` instead. You can read them at `/admin/messages` if you start the app with
+`ADMIN_PASSWORD=yourpassword python3 app.py`.
+
+## Project structure
 
 ```
 Resume/
-├── app.py                  # Flask entry point — run with python3 app.py
-├── requirements.txt        # Python dependencies
-├── certificates.json       # Certificate metadata (images in static/certificates/)
-├── contact_messages.db     # SQLite database for contact form submissions
-├── static/
-│   ├── css/style.css       # All styles (monochrome editorial theme)
-│   ├── js/main.js          # Vanilla JS (scroll reveal, lightbox, parallax)
-│   ├── images/             # Profile photo and assets
-│   └── certificates/       # Certificate images
+├── app.py                 # Flask app + all site content
+├── certificates.json      # certificate display names and order
+├── requirements.txt
+├── public/static/         # served by Vercel's CDN (and by Flask locally)
+│   ├── css/style.css
+│   ├── js/main.js
+│   ├── images/profile.jpg
+│   ├── certificates/
+│   └── files/Priyadharshini_EP_Resume.pdf
 └── templates/
-    ├── base.html            # Shared layout (nav, footer, meta)
-    ├── index.html           # Single-page scroll-snap layout
-    └── admin_messages.html  # Admin view for contact submissions
+    ├── base.html
+    ├── index.html
+    └── admin_messages.html
 ```
-
-## Features
-
-- **Single-page scroll-snap navigation** — all sections snap into full-viewport view
-- **Scroll progress bar** and **active nav highlighting** via Intersection Observer
-- **Contact form** with Flask backend and SQLite storage
-- **Certificate gallery** with lightbox modal
-- **Admin panel** at `/admin/messages` to view contact submissions
-- **Fully responsive** — mobile-first with breakpoints at 768px and 1024px
-
-## Adding Certificates
-
-1. Place certificate images in `static/certificates/`
-2. Edit `certificates.json` to register them:
-   ```json
-   [
-     {"name": "Certificate Name", "path": "certificates/filename.jpg"}
-   ]
-   ```
-3. Restart the server — they'll appear automatically in the Certificates section
-
-## Tech Stack
-
-| Layer    | Technology              |
-|----------|------------------------|
-| Backend  | Python 3, Flask        |
-| Frontend | HTML5, CSS3, Vanilla JS|
-| Database | SQLite                 |
-| Fonts    | Playfair Display, Inter|

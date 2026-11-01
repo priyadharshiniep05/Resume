@@ -286,7 +286,8 @@
             </div>
 
             <div class="contact-form-col reveal">
-                <form action="{{ url_for('contact') }}" method="POST" class="contact-form" id="contactForm">
+                <form action="{{ form_endpoint or url_for('contact') }}" method="POST" class="contact-form" id="contactForm"{% if form_endpoint %} data-ajax="true"{% endif %}>
+                    <input type="hidden" name="_subject" value="New message from your portfolio site">
                     <div class="form-group">
                         <label for="name" class="form-label">Name</label>
                         <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
@@ -299,6 +300,7 @@
                         <label for="message" class="form-label">Message</label>
                         <textarea id="message" name="message" class="form-textarea" rows="6" placeholder="Tell me about the role or project…" required></textarea>
                     </div>
+                    <p class="form-status" id="formStatus" role="status" aria-live="polite" hidden></p>
                     <button type="submit" class="submit-btn">
                         <span>Send Message</span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
