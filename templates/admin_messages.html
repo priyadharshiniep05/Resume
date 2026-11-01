@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section admin-section reveal">
+    <div class="container">
+        <header class="section-header">
+            <span class="section-subtitle">Database Records</span>
+            <h2 class="section-title">Messages Inbox</h2>
+        </header>
+
+        <div class="admin-inbox-wrapper">
+            {% if messages %}
+            <div class="messages-table-wrapper">
+                <table class="messages-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>From</th>
+                            <th>Email</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for msg in messages %}
+                        <tr>
+                            <td class="msg-date">{{ msg.created_at }}</td>
+                            <td class="msg-name"><strong>{{ msg.name }}</strong></td>
+                            <td class="msg-email"><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></td>
+                            <td class="msg-content">{{ msg.message }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="no-messages">
+                <p>No messages received yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

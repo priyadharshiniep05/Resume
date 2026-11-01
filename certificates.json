@@ -1,0 +1,30 @@
+[
+  {
+    "name": "ICRET 2026: Paper Presentation",
+    "file": "ICRET_Conference.jpg"
+  },
+  {
+    "name": "NPTEL: The Joy of Computing using Python",
+    "file": "nptel_python.jpg"
+  },
+  {
+    "name": "NPTEL: Introduction to Machine Learning",
+    "file": "nptel_MachineLearning.jpg"
+  },
+  {
+    "name": "Infosys Springboard: JDBC, Servlets and JSP",
+    "file": "Advanced_java.jpg"
+  },
+  {
+    "name": "Innovathon 2K26: Participation",
+    "file": "HACK_INNOVATHON.jpg"
+  },
+  {
+    "name": "Nullpoint Hackathon: Participation",
+    "file": "HACK_NULLPOINT.jpg"
+  },
+  {
+    "name": "Hackzion Hackathon: Participation",
+    "file": "HACK_HACKZION.jpg"
+  }
+]

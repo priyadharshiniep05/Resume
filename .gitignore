@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.vite/
+.env
+contact_messages.db
+.claude_stage.tgz
+_backup_before_redesign/
+_original_images/
